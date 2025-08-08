@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -14,5 +15,9 @@ func init() {
 }
 
 func main() {
-	fmt.Println(TOKEN)
+	if TOKEN == "" {
+		log.Fatal("")
+	}
+
+
 }
