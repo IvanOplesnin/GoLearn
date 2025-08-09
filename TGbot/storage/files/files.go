@@ -18,13 +18,12 @@ type Storage struct {
 
 const defaultPerm = 0774
 
-var ErrNoSavedPages = errors.New("no saved pages")
 
 func New(basePath string) Storage {
 	return Storage{basePath: basePath}
 }
 
-func (s Storage) Save(page *storage.Page) (err error) {
+func (s *Storage) Save(page *storage.Page) (err error) {
 	defer func() {
 		msg := fmt.Sprintf("Can't save page(%s)", *page)
 		err = e.WrapIfErr(msg, err)
@@ -53,7 +52,7 @@ func (s Storage) Save(page *storage.Page) (err error) {
 	return nil
 }
 
-func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
+func (s *Storage) PickRandom(userName string) (page *storage.Page, err error) {
 	defer func() { err = e.WrapIfErr("can't pick random", err) }()
 
 	fPath := filepath.Join(s.basePath, userName)
@@ -63,7 +62,7 @@ func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
 		return nil, err
 	}
 	if len(files) == 0 {
-		return nil, ErrNoSavedPages
+		return nil, storage.ErrNoSavedPages
 	}
 
 	rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -74,7 +73,7 @@ func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
 	return s.decodePage(filepath.Join(fPath, file.Name()))
 }
 
-func (s Storage) Remove(p *storage.Page) error {
+func (s *Storage) Remove(p *storage.Page) error {
 	fileName, err := fileName(p)
 	if err != nil {
 		return e.Wrap("can't remove file", err)
@@ -90,7 +89,7 @@ func (s Storage) Remove(p *storage.Page) error {
 	return nil
 }
 
-func (s Storage) IsExist(p *storage.Page) (b bool, err error) {
+func (s *Storage) IsExist(p *storage.Page) (b bool, err error) {
 	fileName, err := fileName(p)
 	if err != nil {
 		return false, e.Wrap("can't check file", err)
@@ -108,7 +107,7 @@ func (s Storage) IsExist(p *storage.Page) (b bool, err error) {
 	return true, nil
 }
 
-func (s Storage) decodePage(filePath string) (*storage.Page, error) {
+func (s *Storage) decodePage(filePath string) (*storage.Page, error) {
 	f, err := os.Open(filePath)
 	if err != nil {
 		return nil, e.Wrap("can't decode page", err)
