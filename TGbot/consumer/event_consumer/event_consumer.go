@@ -40,7 +40,7 @@ func (c Consumer) Start() error {
 
 func (c *Consumer) HandleEvents(events []events.Event) error {
 	for _, event := range events {
-		log.Printf("New event %s", event.Type)
+		log.Printf("New event %s", event.Text)
 
 		if err := c.processor.Process(event); err != nil {
 			log.Printf("can't handle event: %s", err.Error())
