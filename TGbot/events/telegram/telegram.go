@@ -22,8 +22,8 @@ type Meta struct {
 var ErrUnknownEventType = errors.New("unknown event")
 var ErrUnknownMetaType = errors.New("unknown Meta type")
 
-func New(tg *telegram.Client, storage storage.Storage) FetchProcessor {
-	return FetchProcessor{
+func New(tg *telegram.Client, storage storage.Storage) *FetchProcessor {
+	return &FetchProcessor{
 		tg:      tg,
 		storage: storage,
 	}
